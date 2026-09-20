@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(120,120,140,0.35); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(120,120,140,0.55); }
+
+.prose-lumen { line-height: 1.65; }
+.prose-lumen p { margin: 0.5em 0; }
+.prose-lumen ul, .prose-lumen ol { margin: 0.5em 0; padding-left: 1.4em; }
+.prose-lumen li { margin: 0.2em 0; }
+.prose-lumen h1, .prose-lumen h2, .prose-lumen h3 {
+  font-weight: 600; margin: 0.8em 0 0.3em;
+}
+.prose-lumen a { color: #4150d6; text-decoration: underline; }
+.dark .prose-lumen a { color: #9fb2ff; }
+.prose-lumen blockquote {
+  border-left: 3px solid #c3cfff; padding-left: 0.8em; color: inherit; opacity: 0.85;
+}
+.prose-lumen table { border-collapse: collapse; width: 100%; margin: 0.6em 0; }
+.prose-lumen th, .prose-lumen td { border: 1px solid rgba(120,120,140,0.35); padding: 0.4em 0.6em; }
+.prose-lumen code:not(pre code) {
+  background: rgba(120,120,140,0.15); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.9em;
+}
+
+@keyframes lumen-blink { 0%, 100% { opacity: 0.2 } 50% { opacity: 1 } }
+.typing-dot { animation: lumen-blink 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }

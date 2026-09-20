@@ -1,0 +1,13 @@
+image:
+  file: .gitpod.Dockerfile
+tasks:
+  - name: Setup + run Lumen
+    init: bash .devcontainer/setup.sh
+    command: bash .devcontainer/start.sh
+ports:
+  - port: 5173
+    onOpen: open-preview
+    visibility: public
+  - port: 8787
+    onOpen: ignore
+    visibility: public

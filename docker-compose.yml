@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:5173}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      # Optional: set DATABASE_URL in your .env to use an external PostgreSQL instead of the
+      # bundled SQLite file. Leave unset (the default) to keep using SQLite, exactly as before.
+      - DATABASE_URL=${DATABASE_URL:-}
+    volumes:
+      - lumen-data:/app/data
+    ports:
+      - "8787:8787"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8787/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Empty: nginx proxies /api same-origin, see frontend/nginx.conf
+        VITE_API_BASE_URL: ""
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    restart: unless-stopped
+
+  # Optional fully-local/open-source model runtime. Not started by default — run
+  # `docker compose --profile local up` to include it, then `docker exec -it <ollama container> ollama pull llama3`
+  # to download a model. Lumen's Ollama provider auto-detects models available at OLLAMA_BASE_URL.
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["local"]
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+volumes:
+  lumen-data:
+  ollama-data:

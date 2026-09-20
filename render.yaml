@@ -1,0 +1,49 @@
+# Render Blueprint — optional. You can either click "New +" → "Blueprint" on Render and point
+# it at this file for a fully automated setup, or ignore this file and configure the single
+# Web Service manually by hand in the Render dashboard (see DEPLOY_RENDER.md for that path,
+# which is the simplest one to follow from an Android phone).
+#
+# Architecture: ONE Render Web Service (Node) serves both the API (under /api/*) and the built
+# React frontend (everything else) from the same process/port — see backend/src/app.ts. This
+# avoids needing two separate services (and two separate free-tier sleep/cold-start cycles).
+databases:
+  - name: lumenai-db
+    plan: free
+    databaseName: lumenai
+    user: lumenai
+
+services:
+  - type: web
+    name: lumenai
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: >
+      cd frontend && npm install && npm run build &&
+      cd ../backend && npm install && npm run build &&
+      mkdir -p dist/public && cp -r ../frontend/dist/. dist/public/
+    startCommand: cd backend && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lumenai-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REFRESH_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://lumenai.onrender.com
+      - key: ALLOW_SHARED_KEYS
+        value: "false"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "60000"
+      - key: RATE_LIMIT_MAX
+        value: "120"
+      - key: MAX_UPLOAD_MB
+        value: "20"

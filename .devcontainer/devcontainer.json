@@ -1,0 +1,16 @@
+{
+  "name": "Lumen dev environment",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+  "forwardPorts": [5173, 8787],
+  "portsAttributes": {
+    "5173": { "label": "Lumen frontend", "onAutoForward": "openPreview" },
+    "8787": { "label": "Lumen backend API", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "echo 'Run: bash .devcontainer/start.sh   (starts backend + frontend together)'",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss", "esbenp.prettier-vscode"]
+    }
+  }
+}
