@@ -40,7 +40,7 @@ services:
       - key: CORS_ORIGIN
         value: https://lumenai.onrender.com
       - key: ALLOW_SHARED_KEYS
-        value: "false"
+        value: "true"
       - key: RATE_LIMIT_WINDOW_MS
         value: "60000"
       - key: RATE_LIMIT_MAX
