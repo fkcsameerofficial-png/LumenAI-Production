@@ -9,7 +9,6 @@ export const geminiProvider: ChatProvider = {
   async listModels(): Promise<ModelInfo[]> {
     return [
       { id: "gemini-3.6-flash", label: "Gemini 3.6 Flash", supportsImages: true },
-      { id: "gemini-3.6-flash-lite", label: "Gemini 3.6 Flash-Lite", supportsImages: true },
     ];
   },
 
