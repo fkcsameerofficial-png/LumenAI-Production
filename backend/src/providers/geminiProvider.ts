@@ -8,8 +8,8 @@ export const geminiProvider: ChatProvider = {
 
   async listModels(): Promise<ModelInfo[]> {
     return [
-      { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash", supportsImages: true },
-      { id: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite", supportsImages: true },
+      { id: "gemini-3.6-flash", label: "Gemini 3.6 Flash", supportsImages: true },
+      { id: "gemini-3.6-flash-lite", label: "Gemini 3.6 Flash-Lite", supportsImages: true },
     ];
   },
 
