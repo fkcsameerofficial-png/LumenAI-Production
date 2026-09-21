@@ -13,12 +13,12 @@ export function ChatWindow({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0 min-w-0 w-full">
       <TopBar onOpenSidebar={onOpenSidebar} />
 
-      <div className="flex-1 overflow-y-auto py-4 space-y-3">
+      <div className="flex-1 min-h-0 min-w-0 overflow-y-auto py-4 space-y-3">
         {!activeId && (
-          <div className="h-full flex flex-col items-center justify-center text-center px-6 text-slate-400">
+          <div className="h-full w-full max-w-full flex flex-col items-center justify-center text-center px-4 sm:px-6 text-slate-400">
             <div className="text-4xl mb-2">✨</div>
             <p className="text-lg font-medium text-slate-600 dark:text-slate-300">Welcome to Lumen</p>
             <p className="text-sm mt-1 max-w-sm">

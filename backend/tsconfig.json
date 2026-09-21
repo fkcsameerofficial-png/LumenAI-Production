@@ -13,5 +13,5 @@
     "declaration": false,
     "sourceMap": true
   },
-  "include": ["src", "tests"]
+  "include": ["src"]
 }

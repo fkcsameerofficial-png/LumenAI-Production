@@ -8,7 +8,7 @@ export function Chat() {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className="h-[100dvh] w-full flex overflow-hidden">
       {/* Desktop sidebar */}
       <div className="hidden sm:block w-72 shrink-0">
         <Sidebar onOpenSettings={() => setSettingsOpen(true)} />
@@ -30,7 +30,7 @@ export function Chat() {
         </div>
       )}
 
-      <div className="flex-1 min-w-0">
+      <div className="flex w-full min-w-0 min-h-0 flex-1 max-w-full">
         <ChatWindow onOpenSidebar={() => setMobileSidebarOpen(true)} />
       </div>
 
