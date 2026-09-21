@@ -31,6 +31,7 @@ modelsRouter.get(
         else if (env.allowSharedKeys) {
           if (p.id === "openai" && env.openaiApiKey) apiKey = env.openaiApiKey;
           if (p.id === "anthropic" && env.anthropicApiKey) apiKey = env.anthropicApiKey;
+          if (p.id === "gemini" && env.geminiApiKey) apiKey = env.geminiApiKey;
         }
 
         const models = await p.listModels(apiKey);

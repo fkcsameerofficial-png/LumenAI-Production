@@ -42,5 +42,6 @@ export const env = {
   openaiBaseUrl: process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1",
   anthropicApiKey: process.env.ANTHROPIC_API_KEY ?? "",
   anthropicBaseUrl: process.env.ANTHROPIC_BASE_URL ?? "https://api.anthropic.com",
+  geminiApiKey: process.env.GEMINI_API_KEY ?? "",
   ollamaBaseUrl: process.env.OLLAMA_BASE_URL ?? "http://localhost:11434",
 };
