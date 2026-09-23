@@ -15,6 +15,7 @@ import { messagesRouter } from "./routes/messages";
 import { filesRouter } from "./routes/files";
 import { modelsRouter } from "./routes/models";
 import { apiKeysRouter } from "./routes/apiKeys";
+import { projectsRouter } from "./routes/projects";
 
 export function createApp() {
   const app = express();
@@ -42,6 +43,7 @@ export function createApp() {
   app.use("/api/files", filesRouter);
   app.use("/api/models", modelsRouter);
   app.use("/api/api-keys", apiKeysRouter);
+  app.use("/api/projects", projectsRouter);
 
   // --- Serve the built frontend (single Render Web Service architecture) ---
   // The Render build command builds the Vite frontend and copies its output into

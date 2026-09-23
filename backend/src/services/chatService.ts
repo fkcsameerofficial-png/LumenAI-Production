@@ -24,6 +24,7 @@ async function resolveApiKey(userId: string, provider: string): Promise<string |
   if (env.allowSharedKeys) {
     if (provider === "openai" && env.openaiApiKey) return env.openaiApiKey;
     if (provider === "anthropic" && env.anthropicApiKey) return env.anthropicApiKey;
+    if (provider === "gemini" && env.geminiApiKey) return env.geminiApiKey;
   }
   // Ollama needs no key at all.
   return null;

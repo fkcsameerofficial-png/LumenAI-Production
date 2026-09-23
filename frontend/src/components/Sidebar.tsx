@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useChatStore } from "../store/chatStore";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 export function Sidebar({
   onOpenSettings,
@@ -22,6 +23,7 @@ export function Sidebar({
   } = useChatStore();
   const { user, logout } = useAuth();
   const { theme, toggle } = useTheme();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -138,6 +140,12 @@ export function Sidebar({
       </div>
 
       <div className="p-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <button
+          onClick={() => navigate("/projects")}
+          className="w-full text-left text-sm rounded-lg px-3 py-2 hover:bg-slate-200/60 dark:hover:bg-slate-800/60"
+        >
+          🛠️ Projects & Agent
+        </button>
         <button
           onClick={toggle}
           className="w-full flex items-center justify-between text-sm rounded-lg px-3 py-2 hover:bg-slate-200/60 dark:hover:bg-slate-800/60"

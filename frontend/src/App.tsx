@@ -4,6 +4,7 @@ import { useAuth } from "./context/AuthContext";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Chat } from "./pages/Chat";
+import { Projects } from "./pages/Projects";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -42,6 +43,14 @@ export default function App() {
           <RedirectIfAuthed>
             <Register />
           </RedirectIfAuthed>
+        }
+      />
+      <Route
+        path="/projects"
+        element={
+          <RequireAuth>
+            <Projects />
+          </RequireAuth>
         }
       />
       <Route
