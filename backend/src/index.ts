@@ -2,9 +2,11 @@ import { initDb } from "./db";
 import { createApp } from "./app";
 import { env } from "./config/env";
 import { logger } from "./utils/logger";
+import { resumeAgentTasks } from "./services/agentService";
 
 async function main() {
   await initDb();
+  await resumeAgentTasks();
   const app = createApp();
 
   // Bind explicitly to 0.0.0.0 (not just "localhost") — required for the app to be reachable

@@ -96,6 +96,9 @@ CREATE TABLE IF NOT EXISTS agent_tasks (
   status TEXT NOT NULL DEFAULT 'queued',
   result TEXT NOT NULL DEFAULT '',
   error TEXT,
+  iteration INTEGER NOT NULL DEFAULT 0,
+  max_iterations INTEGER NOT NULL DEFAULT 8,
+  changed_files TEXT NOT NULL DEFAULT '[]',
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   started_at TEXT,
   finished_at TEXT

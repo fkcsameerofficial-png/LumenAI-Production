@@ -4,7 +4,8 @@ import { api } from "../api/client";
 
 type Project = { id: string; name: string; description: string; updated_at: string };
 type ProjectFile = { id: string; path: string; content: string };
-type Task = { id: string; prompt: string; status: string; result?: string; error?: string; created_at: string };
+type Task = { id: string; prompt: string; status: string; result?: string; error?: string; changed_files?: string; iteration?: number; max_iterations?: number; created_at: string };
+type TaskEvent = { id: string; type: string; message: string; created_at: string };
 
 export function Projects() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export function Projects() {
   const [active, setActive] = useState<Project | null>(null);
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [taskEvents, setTaskEvents] = useState<Record<string, TaskEvent[]>>({});
   const [prompt, setPrompt] = useState("");
   const [newName, setNewName] = useState("");
   const [selectedFile, setSelectedFile] = useState<ProjectFile | null>(null);
@@ -23,16 +25,31 @@ export function Projects() {
     if (!active && data.projects[0]) openProject(data.projects[0]);
   };
 
+  const loadTasks = async (projectId: string) => {
+    const data = await api.get<{ tasks: Task[] }>(`/api/projects/${projectId}/tasks`);
+    setTasks(data.tasks);
+    const eventEntries = await Promise.all(data.tasks.slice(0, 5).map(async task => {
+      const eventData = await api.get<{ events: TaskEvent[] }>(`/api/projects/${projectId}/tasks/${task.id}/events`);
+      return [task.id, eventData.events] as const;
+    }));
+    setTaskEvents(Object.fromEntries(eventEntries));
+  };
+
   const openProject = async (project: Project) => {
     setActive(project);
     const data = await api.get<{ project: Project; files: ProjectFile[] }>(`/api/projects/${project.id}`);
     setFiles(data.files);
-    const taskData = await api.get<{ tasks: Task[] }>(`/api/projects/${project.id}/tasks`);
-    setTasks(taskData.tasks);
+    await loadTasks(project.id);
     setSelectedFile(data.files[0] ?? null);
   };
 
   useEffect(() => { void loadProjects(); }, []);
+
+  useEffect(() => {
+    if (!active || !tasks.some(task => task.status === "queued" || task.status === "running")) return;
+    const timer = window.setInterval(() => void loadTasks(active.id), 3000);
+    return () => window.clearInterval(timer);
+  }, [active?.id, tasks]);
 
   const createProject = async () => {
     if (!newName.trim()) return;
@@ -57,7 +74,11 @@ export function Projects() {
     const model = "gemini-3.6-flash";
     await api.post(`/api/projects/${active.id}/tasks`, { prompt: prompt.trim(), provider, model });
     setPrompt("");
-    await openProject(active);
+    await loadTasks(active.id);
+  };
+
+  const changedFiles = (task: Task) => {
+    try { return JSON.parse(task.changed_files ?? "[]") as string[]; } catch { return []; }
   };
 
   return (
@@ -97,7 +118,13 @@ export function Projects() {
             <div className="border-t border-slate-200 dark:border-slate-800 p-3 space-y-3">
               <div className="text-sm font-medium">AI Agent</div>
               <div className="flex flex-col gap-2 md:flex-row"><textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="Tell Lumen what to build or change in this project..." className="w-full min-h-24 max-h-48 resize-y rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 text-sm md:min-h-16 md:flex-1 md:max-h-32" /><button onClick={() => void runTask()} disabled={!prompt.trim()} className="w-full rounded-xl bg-brand-600 text-white px-4 py-2 text-sm disabled:opacity-50 md:w-auto md:self-end">Build</button></div>
-              <div className="max-h-28 overflow-y-auto space-y-1">{tasks.slice(0, 5).map(t => <div key={t.id} className="text-xs rounded-lg bg-slate-100 dark:bg-slate-900 px-3 py-2"><b>{t.status}</b> — {t.result || t.error || t.prompt}</div>)}</div>
+              <div className="max-h-48 overflow-y-auto space-y-1">{tasks.slice(0, 5).map(t => <div key={t.id} className="text-xs rounded-lg bg-slate-100 dark:bg-slate-900 px-3 py-2">
+                <div className="flex items-center justify-between gap-2"><b>{t.status}</b>{t.iteration ? <span className="text-slate-500">Step {t.iteration}/{t.max_iterations ?? 8}</span> : null}</div>
+                <div className="mt-1">{taskEvents[t.id]?.slice(-1)[0]?.message || t.error || t.result || t.prompt}</div>
+                {t.error && <div className="mt-1 text-red-600 dark:text-red-400">{t.error}</div>}
+                {changedFiles(t).length > 0 && <div className="mt-1 text-slate-500">Changed: {changedFiles(t).join(", ")}</div>}
+                {t.result && t.status === "completed" && <div className="mt-1">Result: {t.result}</div>}
+              </div>)}</div>
             </div>
           </>}
         </main>

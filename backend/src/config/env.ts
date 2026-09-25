@@ -37,6 +37,9 @@ export const env = {
   rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? "60000", 10),
   rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX ?? "120", 10),
 
+  agentMaxIterations: Math.min(Math.max(parseInt(process.env.AGENT_MAX_ITERATIONS ?? "8", 10), 1), 12),
+  agentValidationTimeoutMs: Math.min(Math.max(parseInt(process.env.AGENT_VALIDATION_TIMEOUT_MS ?? "60000", 10), 5000), 120000),
+
   allowSharedKeys: (process.env.ALLOW_SHARED_KEYS ?? "false") === "true",
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   openaiBaseUrl: process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1",

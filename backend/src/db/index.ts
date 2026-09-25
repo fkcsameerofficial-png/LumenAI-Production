@@ -113,4 +113,17 @@ export async function initDb(): Promise<void> {
     db = new SqliteAdapter(env.databasePath);
     logger.info({ path: env.databasePath }, "Using local SQLite database (development)");
   }
+
+  // Keep existing SQLite and Postgres installations compatible with additive schema changes.
+  for (const column of [
+    "ALTER TABLE agent_tasks ADD COLUMN iteration INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE agent_tasks ADD COLUMN max_iterations INTEGER NOT NULL DEFAULT 8",
+    "ALTER TABLE agent_tasks ADD COLUMN changed_files TEXT NOT NULL DEFAULT '[]'",
+  ]) {
+    try {
+      await db.run(column);
+    } catch {
+      // The column already exists on databases initialized with the current schema.
+    }
+  }
 }
